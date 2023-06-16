@@ -21,7 +21,7 @@
   例如assume ds:data即将data:自动替换为ds:
   所以一般程序开头有
 
-  ```
+  ```c
   mov ax,data
   mov ds,ax
   ```
@@ -59,7 +59,7 @@ a db 0FFh
 
 但是在引用变量a时可以用指令来区分它是非符号还是有符号
 
-例如 `imul  a`指令表示乘以  -1 ，而 `mul a`指令则表示乘以 255 
+例如 `imul  a`指令表示乘以  -1 ，而 `mul a`指令则表示乘以 255
 
 - 段地址：偏移地址（逻辑地址寻址）
   以5位16进制的形式
@@ -78,7 +78,7 @@ a db 0FFh
 
   - lea & offset
 
-    ```
+    ```c
     设abc的偏移地址=1000h
     lea dx, abc         ; lea dx, [1000h]
     mov dx, offset abc  ; mov dx, 1000h
@@ -105,12 +105,12 @@ a db 0FFh
 
 ## 算术运算
 
-- `inc / dec  x   `单目运算（自加自减）
+- `inc / dec  x   `单目运算（自加自减，不影响CF）
 - `add / sub  a,b`  双目运算
 - `mul x          ` 单目运算
   根据x宽度确定乘法宽度
 
-  ```
+  ```c
   mul [1]     ah:al   = al * x
   mul [2]     dx:ax   = ax * x
   mul [4]     edx:eax = eax *x
@@ -123,7 +123,7 @@ a db 0FFh
 
   32位十进制输出
 
-  ```
+  ```c
      mov di, 0; 数组s的下标
      mov eax, abc
      mov cx, 0; 统计push的次数
@@ -165,7 +165,7 @@ a db 0FFh
 
   用这些指令来完成十六进制输出：
 
-  ```
+  ```c
   again:
      rol ax, 4  ;取出最高4位到低位
      push ax
@@ -186,6 +186,9 @@ a db 0FFh
      sub cx, 1
      jnz again
   ```
+- sal: shift arithmetic left  算术左移
+  sar: shift arithmetic right 算术右移
+  sal及sar是针对符号数的移位运算, 对负数右移的时候要在左边补1, 对正数右移的时候左边补0, 无论对正数还是负数左移右边都补0
 
 ## 堆栈
 
@@ -198,7 +201,7 @@ a db 0FFh
 - `pushf & popf` 保护FL状态寄存器
 - 手动定义堆栈空间
 
-  ```
+  ```c
   stk segment stack
   db 200h dup(0)    ;或写成dw 100h dup(0)
   stk ends
@@ -214,9 +217,10 @@ DF TF IF（控制）
 - CF（Carry Flag）
   加法进位，减法借位
 
-  ```
+  ```c
   jc  jnc  (jump if (not)carry flag)
   adc      (add+CF)
+  sbb      (sub+CF)
   clc CF=0
   stc CF=1
   ```
@@ -249,3 +253,18 @@ DF TF IF（控制）
   用于debug，反调试
   被动防御：校验代码防止更改
   主动防御：抢夺资源，自己获得int 1H主动权
+
+## 字符串操作
+
+- **xlat(查表)**
+
+  **al=ds:[bx+al]**
+- **movsb movsw movsd(宽度不同)**
+
+  ①ds:si   源字符串(si就是source index)
+  ②es:di  目标字符串(di就是destination index)
+  ③cx      移动次数
+  ④DF=0 即方向标志设成正方向(用指令cld)
+- **stosb stosw stosd(宽度不同)**
+
+  mov es:[di],     al/ax/eax
