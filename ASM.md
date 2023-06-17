@@ -268,3 +268,46 @@ DF TF IF（控制）
 - **stosb stosw stosd(宽度不同)**
 
   mov es:[di],     al/ax/eax
+
+## 常用中断
+
+```asm
+等效操作
+pushf, push cs, push ip
+tf = 0, if = 0
+ip = word ptr 0:[n*4], cs = word ptr 0:[n*4+2]
+
+mov ah,01H
+int 21H           ;al=getchar()
+
+mov ah,02H
+int 21H           ;putchar(dl)
+
+mov ah,09H
+int 21H           ;cout << ds:[dx]-->'$'
+
+mov ah,0AH  
+int 21H           ;cin >> ds:[dx]
+
+mov ah,4CH
+int 21H           ;exit
+
+mov ah,00H
+int 16H           ;AH = BIOS scan code
+                  ;AL = ASCII character
+
+mov ah,3DH
+int 21H           ;openfile
+
+;AL = access and sharing modes
+;DS:DX -> ASCIZ filename
+;CL = attribute mask of files to look for
+
+;Return:
+;CF clear if successful
+;AX = file handle
+;CF set on error
+;AX = error code (01h,02h,03h,04h,05h,0Ch,56h)
+
+
+```
