@@ -21,7 +21,7 @@
   例如assume ds:data即将data:自动替换为ds:
   所以一般程序开头有
 
-  ```c
+  ```asm
   mov ax,data
   mov ds,ax
   ```
@@ -78,7 +78,7 @@ a db 0FFh
 
   - lea & offset
 
-    ```c
+    ```asm
     设abc的偏移地址=1000h
     lea dx, abc         ; lea dx, [1000h]
     mov dx, offset abc  ; mov dx, 1000h
@@ -110,7 +110,7 @@ a db 0FFh
 - `mul x          ` 单目运算
   根据x宽度确定乘法宽度
 
-  ```c
+  ```asm
   mul [1]     ah:al   = al * x
   mul [2]     dx:ax   = ax * x
   mul [4]     edx:eax = eax *x
@@ -123,7 +123,7 @@ a db 0FFh
 
   32位十进制输出
 
-  ```c
+  ```asm
      mov di, 0; 数组s的下标
      mov eax, abc
      mov cx, 0; 统计push的次数
@@ -165,7 +165,7 @@ a db 0FFh
 
   用这些指令来完成十六进制输出：
 
-  ```c
+  ```asm
   again:
      rol ax, 4  ;取出最高4位到低位
      push ax
@@ -201,7 +201,7 @@ a db 0FFh
 - `pushf & popf` 保护FL状态寄存器
 - 手动定义堆栈空间
 
-  ```c
+  ```asm
   stk segment stack
   db 200h dup(0)    ;或写成dw 100h dup(0)
   stk ends
@@ -217,7 +217,7 @@ DF TF IF（控制）
 - CF（Carry Flag）
   加法进位，减法借位
 
-  ```c
+  ```asm
   jc  jnc  (jump if (not)carry flag)
   adc      (add+CF)
   sbb      (sub+CF)
@@ -236,14 +236,14 @@ DF TF IF（控制）
 - DF(Direction Flag)
   字符串复制方向
 
-  ```
+  ```asm
   cld DF=0 正方向
   std DF=1 反方向
   ```
 - IF(Interrupt Flag)
   1 --> 允许中断
 
-  ```
+  ```asm
   cli   (置0)
   免打扰程序段
   sti  （置1）
