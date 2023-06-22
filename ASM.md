@@ -269,6 +269,14 @@ DF TF IF（控制）
 
   mov es:[di],     al/ax/eax
 
+## 关于循环
+
+```asm
+loop label    ;while(--CX) jmp label
+loopz label   ;while(ZF && --CX) jmp label
+loopnz label  ;while(!ZF && --CX) jmp label
+```
+
 ## 常用中断
 
 ```asm
@@ -287,7 +295,9 @@ mov ah,09H
 int 21H           ;cout << ds:[dx]-->'$'
 
 mov ah,0AH  
-int 21H           ;cin >> ds:[dx]
+int 21H           ;getline( ds:[dx+2] )
+		  ;其中ds:[dx]为最大读入量（记得置一个大数）
+		  ;ds:[dx+1] 为实际读到的字符数 
 
 mov ah,4CH
 int 21H           ;exit
@@ -327,7 +337,6 @@ int 21H           ;openfile
   if((AL & 0FH) >= 0AH) AL += 6H     //低位
   if((AL & 0F0H) >= 0AH) AL += 60H   //高位
   ```
-
   - das 减法调整类似
 - 非压缩BCD     8位表示一个十进制位
 
@@ -341,7 +350,6 @@ int 21H           ;openfile
   ```cpp
   if((AL & 0FH) >= 0AH) AL += 6 , AH++
   ```
-
   - aas 减法调整类似
   - aam 乘法调整
 
